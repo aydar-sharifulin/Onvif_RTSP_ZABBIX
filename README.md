@@ -445,6 +445,52 @@ sudo -u zabbix python3 /usr/lib/zabbix/externalscripts/camcheck.py 192.0.2.10 --
 - ✅ Расширенная диагностика RTSP потока: битрейт, кодек, аудио-потоки.
 - ✅ Улучшение обработки ошибок и логирование в отдельный файл.
 
+## Performance tuning
+
+### External checks
+
+`camcheck.py` is executed as a Zabbix **External check**. External checks are processed by the standard Zabbix pollers (`StartPollers`).
+
+For installations with a large number of cameras, the default poller count may cause too many simultaneous RTSP/ONVIF connections and increase CPU load.
+
+Recommended settings for Raspberry Pi and other low-power systems:
+
+```ini
+# /etc/zabbix/zabbix_server.conf
+
+StartPollers=3
+Timeout=30
+```
+
+After changing the configuration, restart the server:
+
+```bash
+sudo systemctl restart zabbix-server
+```
+
+Verify that the new poller count is active:
+
+```bash
+ps -ef | grep '[z]abbix_server: poller'
+```
+
+Example output:
+
+```
+zabbix_server: poller #1
+zabbix_server: poller #2
+zabbix_server: poller #3
+```
+
+### Recommended update interval
+
+For installations with more than **100 cameras**, it is recommended to increase the master item update interval:
+
+```yaml
+delay: 30m
+```
+
+This significantly reduces CPU and network load while still providing reliable camera health monitoring.
 
 ---
 
