@@ -601,19 +601,6 @@ Delete lost resources: 30d
 
 ---
 
-## Требования
-
-**Все зависимости обязательны!**
-
-- Python 3.11+
-- Установленные библиотеки Python (см. `requirements.txt`):
-  - `onvif` (пакет `onvif-zeep`)
-  - `opencv-python`
-  - `numpy`
-  - `zeep`
-- Установленные системные утилиты `ffmpeg` и `ffprobe`
----
-
 ## Performance tuning
 
 ### External checks
@@ -643,13 +630,6 @@ Verify that the new poller count is active:
 ps -ef | grep '[z]abbix_server: poller'
 ```
 
-Example output:
-
-```
-zabbix_server: poller #1
-zabbix_server: poller #2
-zabbix_server: poller #3
-```
 
 ### Recommended update interval
 
