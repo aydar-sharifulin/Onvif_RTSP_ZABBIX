@@ -1,0 +1,67 @@
+zabbix_export:
+  version: '7.4'
+
+  template_groups:
+    - uuid: 215abbab93df48cab8aea43b5c915f2d
+      name: 'Security Cameras - AllCamers'
+
+  host_groups:
+    - uuid: f2481361f99448eea617b7b1d4765566
+      name: 'Discovered hosts'
+
+  templates:
+    - uuid: 6afd6fd681ee4ee482585bf2b08383ea
+      template: 'CAM Discovery'
+      name: 'CAM Discovery'
+
+      groups:
+        - name: 'Security Cameras - AllCamers'
+
+      discovery_rules:
+        - uuid: ef717aae4f154f1fa1e91f49360aada0
+          name: 'Camera discovery'
+          type: EXTERNAL
+
+          key: 'camdiscover.py["{$CAM_DISCOVERY_RANGES}","{$CAM_DISCOVERY_PORTS}","{$CAM_DISCOVERY_TIMEOUT}","{$CAM_DISCOVERY_WORKERS}"]'
+
+          delay: 1h
+
+          enabled_lifetime_type: DISABLE_AFTER
+          enabled_lifetime: 1d
+
+          host_prototypes:
+            - uuid: 13627227b38a4e288daa5ddc5b7770b9
+              host: 'camera-{#CAM.IP}'
+              name: 'Camera {#CAM.IP}'
+
+              group_links:
+                - group:
+                    name: 'Discovered hosts'
+
+              templates:
+                - name: 'ALL_CAM_Check'
+
+              macros:
+                - macro: '{$CAMERA_IP}'
+                  value: '{#CAM.IP}'
+
+                - macro: '{$CAMERA_RTSP_PORT}'
+                  value: '{#CAM.PORT}'
+
+              custom_interfaces: 'YES'
+
+              interfaces:
+                - ip: '{#CAM.IP}'
+
+      macros:
+        - macro: '{$CAM_DISCOVERY_PORTS}'
+          value: '554'
+
+        - macro: '{$CAM_DISCOVERY_RANGES}'
+          value: '192.168.0.0/24'
+
+        - macro: '{$CAM_DISCOVERY_TIMEOUT}'
+          value: '0.5'
+
+        - macro: '{$CAM_DISCOVERY_WORKERS}'
+          value: '64'
