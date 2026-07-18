@@ -467,7 +467,7 @@ zabbix_export:
           name: JSON_RAW
           type: EXTERNAL
           key: 'camcheck.py[{HOST.CONN}]'
-          delay: 10m
+          delay: 30m
           history: 1d
           value_type: TEXT
       macros:
